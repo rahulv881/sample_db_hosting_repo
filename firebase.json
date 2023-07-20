@@ -1,0 +1,7 @@
+{
+  "database": {
+    "site": "sampledbtesting20230720",
+    "public": "public",
+    "rules": "database.rules.json"
+  }
+}

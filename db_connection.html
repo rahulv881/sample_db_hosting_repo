@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Database Connection API Example</title>
+</head>
+
+<body>
+    <h1>Database Connection API Example</h1>
+    <div id="data-container">
+        <!-- The fetched data will be displayed here -->
+    </div>
+
+    <script>
+        function fetchDataFromDB() {
+            // Replace 'http://your-api-url.com/connect-to-db' with your actual API endpoint URL
+            fetch('http://your-/connect-to-db')
+                .then(response => response.json())
+                .then(data => displayData(data))
+                .catch(error => console.error('Error fetching data:', error));
+        }
+
+        function displayData(data) {
+            const dataContainer = document.getElementById('data-container');
+            dataContainer.innerHTML = '';
+
+            if (data && data.length > 0) {
+                const ul = document.createElement('ul');
+                data.forEach(item => {
+                    const li = document.createElement('li');
+                    li.textContent = `ID: ${item.id}, Name: ${item.name}`;
+                    ul.appendChild(li);
+                });
+                dataContainer.appendChild(ul);
+            } else {
+                dataContainer.textContent = 'No data available.';
+            }
+        }
+
+        // Call the API function on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchDataFromDB();
+        });
+    </script>
+</body>
+
+</html>
