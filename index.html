@@ -28,7 +28,7 @@
 			<div class="card-body">
 				<div class="form-group">
 					<label for="exampleFormControlInput1">
-						Enter Your Name
+						Full Name
 					</label>
 					
 					<input type="text" class="form-control"
@@ -37,17 +37,45 @@
 
 				<div class="form-group">
 					<label for="exampleFormControlInput1">
-						Email address
+						Age
 					</label>
 					
-					<input type="email" class="form-control"
-					id="email" placeholder="name@example.com">
+					<input type="number" class="form-control"
+					id="age" placeholder="Enter your age">
+				</div>
+				<div class="form-group">
+					<label for="exampleFormControlInput1">
+						Gender
+					</label>
+					
+					<input type="text" class="form-control"
+					id="gender" placeholder="Enter your gender">
+				</div>
+				<div class="form-group">
+					<label for="exampleFormControlInput1">
+						Grade
+					</label>
+					
+					<input type="text" class="form-control"
+					id="grade" placeholder="Enter your grade">
+				</div>
+				<div class="form-group">
+					<label for="exampleFormControlInput1">
+						Final score
+					</label>
+					
+					<input type="text" class="form-control"
+					id="score" placeholder="Enter your score">
 				</div>
 			</div>
 			<button type="submit" class="btn btn-primary"
 				style="margin-left: 15px; margin-top: 10px">
 				Submit
 			</button>
+            <div style="height: 200px; overflow-y: scroll; border: 1px solid #ccc;">
+                <ul style="list-style: none; padding: 0; margin: 0;" id="list">
+                </ul>
+            </div>
 		</div>
 	</form>
 
@@ -56,15 +84,7 @@
 	</script>
 	
 	<script>
-		// var firebaseConfig = {
-		// 	apiKey: "Use Your Api Key Here",
-		// 	authDomain: "Use Your authDomain Here",
-		// 	databaseURL: "Use Your databaseURL Here",
-		// 	projectId: "Use Your projectId Here",
-		// 	storageBucket: "Use Your storageBucket Here",
-		// 	messagingSenderId: "Use Your messagingSenderId Here",
-		// 	appId: "Use Your appId Here"
-		// };
+        // TODO: Move these config values to env before use on prod
         var firebaseConfig = {
             apiKey: "AIzaSyDPn2CnNUrpwN2mooV1WrGFLkbQwSnPz7k",
             authDomain: "sampledb20230720.firebaseapp.com",
@@ -74,24 +94,45 @@
             messagingSenderId: "924662638665",
             appId: "1:924662638665:web:f055c165372675083b3798",
             measurementId: "G-V21LQZSX49"
-        };
-
+        }
 		firebase.initializeApp(firebaseConfig);
 
 		var messagesRef = firebase.database()
-			.ref('Collected Data');
+			.ref('UNICEF');
+
+        // * Load the data from Firebase when the page is ready
+        document.addEventListener("DOMContentLoaded", function() {
+            messagesRef.on("value", displayData);
+        });
 		
 		document.getElementById('contactForm')
 			.addEventListener('submit', submitForm);
 
+        function displayData(snapshot) {
+            var dataList = document.getElementById("list");
+            dataList.innerHTML = ""; // Clear the previous data
+            snapshot.forEach(function(childSnapshot) {
+                var data = childSnapshot.val();
+                console.log("data = ",data);
+                var listItem = document.createElement("li");
+                listItem.textContent = JSON.stringify(data);
+                dataList.appendChild(listItem);
+            });
+        }
+
 		function submitForm(e) {
 			e.preventDefault();
 
-			// Get values
+			// Get values: Full Name, Age, Gender, Grade, Final Score, Created ON
 			var name = getInputVal('name');
-			var email = getInputVal('email');
+			var age = getInputVal('age');
+			var gender = getInputVal('gender');
+			var grade = getInputVal('grade');
+			var score = getInputVal('score');
+            // TODO: Add created_on
 
-			saveMessage(name, email);
+            console.log("name,age,gender,grade,score: ",name,age,gender,grade,score);
+			saveMessage(name, age, gender, grade, score);
 			document.getElementById('contactForm').reset();
 		}
 
@@ -101,11 +142,14 @@
 		}
 
 		// Save message to firebase
-		function saveMessage(name, email) {
+		function saveMessage(name, age,gender,grade,score) {
 			var newMessageRef = messagesRef.push();
 			newMessageRef.set({
 				name: name,
-				email: email,
+				age: age,
+                gender: gender,
+                grade: grade,
+                score: score
 			});
 		}
 	</script>
