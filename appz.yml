@@ -1,0 +1,118 @@
+app:
+  name: lyc-account
+  code: LYCACCOUNT
+  notify: veative-alerts@ecloudcontrol.com
+
+build:
+  version: 0.4
+  env: DEV
+  build_file: none
+  args:
+    SONARQUBE: disabled
+    SONAR_LOGIN_TOKEN: $${build.token.sonar}
+    SONAR_HOST_URL: https://devclever-india-dev-sonarqube-8-2.0de945bd.lowtouch.cloud
+    SONAR_PROJECT_NAME: lyc-account
+    SONAR_PROJECT_KEY: lyc-account
+    SCAN_LANG: node
+    NODE_MODULES: typescript
+  output_files: output/*.zip
+  image_template: node-14.16
+
+deploy:
+  context: DevClever-India/DEV
+  replicas: 2
+  strategy: rolling
+  ready_seconds: 45
+  port:
+    - 8080
+
+properties:
+  SERVER_PORT: 8080
+  COGNITO_ACCESS_KEY:
+    vault: COGNITO_KEY
+  COGNITO_SECRET_KEY:
+    vault: COGNITO_SECRET_KEY
+  COGNITO_USER_POOL_ID:
+    vault: COGNITO_USER_POOL_ID
+  COGNITO_APP_CLIENT_ID:
+    vault: COGNITO_APP_CLIENT_ID
+  AWS_REGION: ap-south-1
+  DYNAMODB_ACCESS_KEY:
+    vault: DYNAMODB_KEY
+  DYNAMODB_SECRET_KEY:
+    vault: DYNAMODB_SECRET_KEY
+  DYNAMODB_TABLE_PRIFIX: "DEV_"
+  ARN:
+    vault: ARN
+  #SES Configuration
+  SES_ACCESS_KEY:
+    vault: SES_ACCESS_KEY
+  SES_SECRET_KEY:
+    vault: SES_SECRET_KEY
+  SES_FROM_EMAIL:
+    vault: SES_FROM_EMAIL
+
+  #SNS Configuration
+  SNS_ACCESS_KEY:
+    vault: SNS_ACCESS_KEY
+  SNS_SECRET_KEY:
+    vault: SNS_SECRET_KEY
+
+  #S3 Configuration
+  S3_ACCESS_KEY:
+    vault: S3_ACCESS_KEY
+  S3_SECRET_KEY:
+    vault: S3_SECRET_KEY
+  S3_STATIC_BUCKET:
+    vault: S3_STATIC_BUCKET
+  S3_BUCKET_STATIC_URL: "https://lyc-staticcontenet.s3.ap-south-1.amazonaws.com/"
+
+  #AWS CloudFront URL
+  CLOUDFRONT_URL: "https://static.launchmycareer.com/"
+
+  #CSP Allowed Domains add mulitple with ||
+  CSP_DOMAIN_ALLOW: "https://*.launchmycareer.com||https://devclever-india-dev-lyc-web-0-4.0de945bd.lowtouch.cloud||https://lyc-staticcontenet.s3.ap-south-1.amazonaws.com||https://kyc-api.surepass.io"
+
+  #Subscription api endpoint
+  SUBSCRIPTION_API_ENDPOINT: "https://devapi.launchmycareer.com/subscription"
+
+  #Database Configuration
+  DB_HOST: "lmcmaster-dev.cyurzu1luedq.ap-south-1.rds.amazonaws.com"
+  DB_USER: lyc_account
+  DB_PASSWORD:
+    vault: DB_PASSWORD
+  DB_NAME: lyc_account
+  DB_PORT: 3306
+
+  #Database Configuration Diagnostic
+  DB_HOST_DT: "lmcmaster-dev.cyurzu1luedq.ap-south-1.rds.amazonaws.com"
+  DB_USER_DT: lyc_diagnostic
+  DB_PASSWORD_DT:
+    vault: DB_PASSWORD_DT
+  DB_NAME_DT: lyc_diagnostic
+  DB_PORT_DT: 3306
+
+  ENTITY_ID:
+    vault: ENTITY_ID
+  S3_USER_PROFILE: "cgc/profile/"
+  ENCRYPT_KEY: 93e1af8dc199d05eca1d3c93b8dca5f6
+
+  SUREPASS_TOKEN:
+    vault: SUREPASS_TOKEN
+
+  SUREPASS_URL: "https://kyc-api.surepass.io"
+
+  CC_PRODUCT_ID: "21d9df72-a963-408b-a7b0-af70e561ca23"
+  CSC_LH_ID: "50861a80-0ab4-4f3c-b5bd-82cef7373326"
+  LH_VT_COURSE_ID: 6
+  VEATIVE_API_BASE_URL: "https://api.veative.com/v1"
+
+  #Database Configuration LYC-Subscription
+  SUB_DB_HOST: "lmcmaster-dev.cyurzu1luedq.ap-south-1.rds.amazonaws.com"
+  SUB_DB_USER: lyc_subscription
+  SUB_DB_PASSWORD: rAbyOqUX25qZqmRCSIxK
+    #vault: SUB_DB_PASSWORD
+  SUB_DB_NAME: lyc_subscription
+  SUB_DB_PORT: 3306
+  
+  revision: 75

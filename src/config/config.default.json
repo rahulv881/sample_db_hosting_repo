@@ -1,0 +1,70 @@
+{
+  "urlSSL": false,
+  "server": {
+    "name": "base",
+    "host": "0.0.0.0",
+    "port": 8080,
+    "url": "http://localhost:8080",
+    "bodySize_API_JSON": "5mb",
+    "bodySize_API_urlencoded": "8mb",
+    "bodySize_ADMIN_JSON": "5mb",
+    "bodySize_ADMIN_urlencoded": "8mb",
+    "defaultTimeZone": "Asia/Kolkata"
+  },
+  "debug": false,
+  "apm": {
+    "auth": {
+      "username": "changeme",
+      "password": "changeme"
+    }
+  },
+  "amqp": {
+    "host": "localhost",
+    "port": 5672,
+    "vhost": "/"
+  },
+  "database": {
+    "rms": {
+      "host": "database-2.c4vvcyevxw4p.ap-south-1.rds.amazonaws.com",
+      "port": 3306,
+      "name": "sample",
+      "user": "admin",
+      "password": "8LIAOIw51eAHEOhdoSBc",
+      "log_sql_query": 1,
+      "debug": false
+    }
+  },
+  "scheduler": {
+    "url": "",
+    "accessToken": "changeme"
+  },
+  "rateLimiter": {
+    "enabled": true
+  },
+  "elastic": {
+    "node": "http://localhost:9200"
+  },
+  "rabbit": {
+    "url": "amqp://localhost:5673"
+  },
+  "dynamo_db": {
+    "access_key_id": "AKIAROSO3ECAXYMSDNEJ",
+    "secret_access_key": "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",
+    "region": "ap-south-1" 
+  },
+  "emailAlerts": {
+    "enabled": false
+  },
+  "redis": {
+    "port": 6379,
+    "host": "localhost"
+  },
+  "analytics": {
+    "url": "",
+    "enabled": false
+  },
+  "cors": {
+    "credentials": true,
+    "whitelist": []
+  }
+}
