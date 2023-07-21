@@ -1,29 +1,37 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html>
 <head>
-	<meta charset="UTF-8">
-	<title>Collecting Data</title>
-	<script src=
-"https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
-	</script>
-
-	<link rel="stylesheet" href=
+    <title>UNICEF Data</title>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <link rel="stylesheet" href=
 "https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
 		integrity=
 "sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2"
 		crossorigin="anonymous">
+        <style>
+            #dataTable{ width: 100%; border: 1px solid #ddd; padding: 10px; margin-top: 10px; margin-bottom: 10px;}
+            #dataTable th, #dataTable td{ border-bottom: 1px solid #ddd; border-right: 1px solid #ddd; padding: 5px 10px;}
+            .formBox{ width: 100%; display: flex; flex-wrap: wrap; justify-content: space-between; padding: 40px;}
+            #pagination{ margin-top: 20px;}
+            #pagination button {
+    color: #fff;
+    background-color: #007bff;
+    border-color: #007bff; border: 0px; border-radius: 4px; padding: 5px 15px; margin: 0 0 0 20px;}
+    .formBoxIn, #contactForm{ width: 45%;}
+        </style>
 </head>
 
-<body class="container" style="margin-top: 50px;
-	width: 50%; height:auto;">
+<body >
 	
-	<h2 class="text-primary" style=
-		"margin-left: 15px; margin-bottom: 10px">
-		Hey There,Help Us In Collecting Data
-	</h2>
 	
-	<form class="container" id="contactForm">
+    <div class="formBox">
+	<form id="contactForm">
+        <h2 class="text-primary" style=
+    "padding: 0 0 20px 0; text-align: center;">
+    Hey There,Help Us In Collecting Data
+    </h2>
 		<div class="card">
 			<div class="card-body">
 				<div class="form-group">
@@ -69,22 +77,55 @@
 				</div>
 			</div>
 			<button type="submit" class="btn btn-primary"
-				style="margin-left: 15px; margin-top: 10px">
+				style="margin: 0 20px 20px 20px;">
 				Submit
 			</button>
-            <div style="height: 200px; overflow-y: scroll; border: 1px solid #ccc;">
-                <ul style="list-style: none; padding: 0; margin: 0;" id="list">
-                </ul>
-            </div>
+
 		</div>
 	</form>
 
-	<script src=
-"https://www.gstatic.com/firebasejs/3.7.4/firebase.js">
-	</script>
-	
-	<script>
-        // TODO: Move these config values to env before use on prod
+<div class="formBoxIn">
+    <div style="width: 100%; display: flex; justify-content: space-between;">
+        <div style="width: 100%">
+            <label for="searchName">Search by Name:</label>
+            <input type="text" id="searchName" oninput="searchData()" />
+        </div>
+
+
+        <div style="width: 200px; display: flex; justify-content: space-between;">
+            <label for="sortCriteria">Sort by:</label>
+            <select id="sortCriteria" onchange="sortData()">
+                <option value="name">Name</option>
+                <option value="age">Age</option>
+                <option value="gender">Gender</option>
+                <option value="score">Score</option>
+            </select>
+        </div>
+    </div>
+
+    <table id="dataTable" >
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Age</th>
+                <th>Gender</th>
+                <th>Score</th>
+            </tr>
+        </thead>
+        <tbody id="dataList">
+            <!-- Data will be loaded here -->
+        </tbody>
+    </table>
+
+    <div id="pagination">
+        <!-- Pagination controls will be added here -->
+    </div>
+    </div>
+    </div>
+
+
+    <script>
+        // Replace with your Firebase project configuration
         var firebaseConfig = {
             apiKey: "AIzaSyDPn2CnNUrpwN2mooV1WrGFLkbQwSnPz7k",
             authDomain: "sampledb20230720.firebaseapp.com",
@@ -95,30 +136,73 @@
             appId: "1:924662638665:web:f055c165372675083b3798",
             measurementId: "G-V21LQZSX49"
         }
-		firebase.initializeApp(firebaseConfig);
+        
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
 
-		var messagesRef = firebase.database()
-			.ref('UNICEF');
+        // Get a reference to the "UNICEF" schema in the database
+        var unicefRef = firebase.database().ref("UNICEF");
 
-        // * Load the data from Firebase when the page is ready
-        document.addEventListener("DOMContentLoaded", function() {
-            messagesRef.on("value", displayData);
-        });
-		
-		document.getElementById('contactForm')
-			.addEventListener('submit', submitForm);
-
+        // Function to display the data in both the table and the list
         function displayData(snapshot) {
-            var dataList = document.getElementById("list");
+            var dataList = document.getElementById("dataList");
             dataList.innerHTML = ""; // Clear the previous data
+
+            var dataTable = document.getElementById("dataTable");
+            var tableBody = dataTable.getElementsByTagName("tbody")[0];
+            tableBody.innerHTML = ""; // Clear the previous data
+
             snapshot.forEach(function(childSnapshot) {
                 var data = childSnapshot.val();
-                console.log("data = ",data);
-                var listItem = document.createElement("li");
-                listItem.textContent = JSON.stringify(data);
-                dataList.appendChild(listItem);
+                // var listItem = document.createElement("li");
+                // listItem.textContent = `${data.name}`;
+                // dataList.appendChild(listItem);
+
+                var tableRow = document.createElement("tr");
+                tableRow.innerHTML = `<td>${data.name}</td><td>${data.age}</td><td>${data.gender}</td><td>${data.score}</td>`;
+                tableBody.appendChild(tableRow);
             });
         }
+
+        // Function to search data by name
+        function searchData() {
+            var searchName = document.getElementById("searchName").value.trim().toLowerCase();
+            unicefRef.orderByChild("name").startAt(searchName).endAt(searchName + "\uf8ff").on("value", displayData);
+        }
+
+        // Function to sort data by selected criteria
+        function sortData() {
+            var sortCriteria = document.getElementById("sortCriteria").value;
+            unicefRef.orderByChild(sortCriteria).on("value", displayData);
+        }
+
+        // Load the initial data with pagination when the page is ready
+        document.addEventListener("DOMContentLoaded", function() {
+            unicefRef.limitToFirst(5).on("value", displayData);
+
+            // Add pagination controls
+            var paginationDiv = document.getElementById("pagination");
+            var currentPage = 1;
+
+            function updatePaginationControls() {
+                paginationDiv.innerHTML = `Page: ${currentPage} <button onclick="goToPage('prev')">Previous</button> <button onclick="goToPage('next')">Next</button>`;
+            }
+
+            function goToPage(direction) {
+                if (direction === "prev" && currentPage > 1) {
+                    currentPage--;
+                } else if (direction === "next") {
+                    currentPage++;
+                }
+                unicefRef.limitToFirst(5).startAt((currentPage - 1) * 5).on("value", displayData);
+                updatePaginationControls();
+            }
+
+            updatePaginationControls();
+        });
+        document.getElementById('contactForm')
+			.addEventListener('submit', submitForm);
+
 
 		function submitForm(e) {
 			e.preventDefault();
@@ -143,7 +227,7 @@
 
 		// Save message to firebase
 		function saveMessage(name, age,gender,grade,score) {
-			var newMessageRef = messagesRef.push();
+			var newMessageRef = unicefRef.push();
 			newMessageRef.set({
 				name: name,
 				age: age,
@@ -152,7 +236,6 @@
                 score: score
 			});
 		}
-	</script>
+    </script>
 </body>
-
 </html>
